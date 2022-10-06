@@ -11,13 +11,13 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.generators.winningnumbers.MutableClock;
-import pl.generators.winningnumbers.WinningnumbersApplication;
+import pl.generators.winningnumbers.WinningNumbersApplication;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 @SpringBootTest(
-        classes = WinningnumbersApplication.class,
+        classes = WinningNumbersApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = "application.environment=integration")
 @Import(TestConfig.class)
@@ -41,7 +41,7 @@ public class BaseIntegrationTest {
     @BeforeEach
     void reset() {
         //reset clock for tests
-        clock.setToday(LocalDateTime.of(2022, 02, 12, 10, 11, 00).atZone(ZoneId.systemDefault()));
+        clock.setToday(LocalDateTime.of(2022, 2, 12, 10, 11, 0).atZone(ZoneId.systemDefault()));
     }
 
     static {

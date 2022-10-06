@@ -6,6 +6,7 @@ import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
+
 import static pl.generators.winningnumbers.logic.Constants.*;
 
 
@@ -21,12 +22,18 @@ class DrawTimer {
 
 
     public LocalDateTime generateDrawDate() {
-       return LocalDateTime.now(clock).getDayOfWeek().equals(DayOfWeek.SATURDAY) && LocalDateTime.now(clock).getHour()< HOUR_OF_DRAW ?
-               LocalDateTime.now(clock).toLocalDate().with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)).atTime(HOUR_OF_DRAW, MINUTE_OF_DRAW) :
-               LocalDateTime.now(clock)
-               .toLocalDate()
-               .with(TemporalAdjusters.next(DayOfWeek.SATURDAY))
-               .atTime(HOUR_OF_DRAW,MINUTE_OF_DRAW);
+        return LocalDateTime.now(clock).getDayOfWeek().equals(DayOfWeek.SATURDAY)
+                && LocalDateTime.now(clock).getHour() < HOUR_OF_DRAW ?
+
+                LocalDateTime.now(clock)
+                        .toLocalDate()
+                        .with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
+                        .atTime(HOUR_OF_DRAW, MINUTE_OF_DRAW) :
+
+                LocalDateTime.now(clock)
+                        .toLocalDate()
+                        .with(TemporalAdjusters.next(DayOfWeek.SATURDAY))
+                        .atTime(HOUR_OF_DRAW, MINUTE_OF_DRAW);
     }
 
     public boolean itsTimeToMakeADraw(LocalDateTime dateTime) {

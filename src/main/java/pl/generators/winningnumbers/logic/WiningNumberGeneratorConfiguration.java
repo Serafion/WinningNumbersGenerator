@@ -2,15 +2,16 @@ package pl.generators.winningnumbers.logic;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import pl.generators.winningnumbers.logic.repository.WinningNumbersRepository;
 
 import java.time.Clock;
 
 @Configuration
 public class WiningNumberGeneratorConfiguration {
-    // to be changed in production due to lack of WinningNumbersRepostory
 
     @Bean
+    @Primary
     public WiningNumbersGeneratorFacade winingNumbersGeneratorFacade(WinningNumbersRepository winningNumbersRepository, Clock clock) {
         return buildDefaultModule(clock, winningNumbersRepository);
     }

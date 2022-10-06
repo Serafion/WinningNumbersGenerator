@@ -19,6 +19,13 @@ public class WinningNumbersController {
     @Autowired
     WiningNumbersGeneratorFacade winingNumbersGeneratorFacade;
 
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ResponseEntity<String> basicResponse() {
+        return ResponseEntity.ok().body("hello");
+
+    }
+
+
     @RequestMapping(value = "/get_numbers", method = RequestMethod.GET, headers = "Accept=application/json")
     public ResponseEntity<List<Integer>> getNumbers(@RequestBody WinningNumbersRequest winningNumbersRequest) {
         try {

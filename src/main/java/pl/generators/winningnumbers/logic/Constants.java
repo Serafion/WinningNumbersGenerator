@@ -1,6 +1,6 @@
 package pl.generators.winningnumbers.logic;
 
-class Constants {
+public class Constants {
 
     public static final int LOW_NUMBER_BOUNDARY = 1;
     public static final int HIGH_NUMBER_BOUNDARY = 99;

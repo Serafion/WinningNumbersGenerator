@@ -16,6 +16,9 @@ public class WinningNumbersTestConstants {
             , SECOND_OF_DRAW);
     public final LocalDateTime VALID_DATE_OF_DRAW_TO_BE_DRAWN = LocalDateTime.of(2022, 8, 20, HOUR_OF_DRAW, MINUTE_OF_DRAW
             , SECOND_OF_DRAW);
+
+    public final LocalDateTime VALID_DATE_SATURDAY_BEFORE_DRAW = LocalDateTime.of(2022, 8, 20, 10, MINUTE_OF_DRAW, SECOND_OF_DRAW);
+
     public final LocalDateTime INVALID_DATE_OF_DRAW = LocalDateTime.of(2022, 8, 15, HOUR_OF_DRAW, MINUTE_OF_DRAW
             , SECOND_OF_DRAW);
     public final HashMap<LocalDateTime, WinningNumbersDto> map;

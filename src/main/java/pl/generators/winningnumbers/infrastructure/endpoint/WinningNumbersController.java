@@ -24,48 +24,22 @@ public class WinningNumbersController {
     @Autowired
     WiningNumbersGeneratorFacade winingNumbersGeneratorFacade;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<String> basicResponse() {
-        return ResponseEntity.ok().body("hello");
-
-    }
-
-
-//    @RequestMapping(value = "/get_numbers", method = RequestMethod.GET, headers = "Accept=application/json")
-//    public ResponseEntity<List<Integer>> getNumbers(@RequestBody WinningNumbersRequest winningNumbersRequest) {
-//        try {
-//
-//            return ResponseEntity.ok().body(winingNumbersGeneratorFacade.retrieveWonNumbersForDate(LocalDateTime.parse(winningNumbersRequest.dateTime)).winningNumbers());
-//        } catch (Exception e) {
-//            log.info(e.getMessage() + "  and also " + e.getCause());
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
-
-    @RequestMapping(value = "/generate_numbers_manual_mode", method = RequestMethod.GET, headers = "Accept=application/json")
-    public ResponseEntity<String> generateNumbers() {
-        try {
-            if (winingNumbersGeneratorFacade.generateNumbers().isPresent()) {
-                return ResponseEntity.ok().body(winingNumbersGeneratorFacade.generateNumbers().get().toString());
-            } else {
-                return ResponseEntity.ok().body("No numbers generated");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @RequestMapping(value = "/get_numbers", method = RequestMethod.GET)
+    @RequestMapping(value = "/winningNumbers", method = RequestMethod.GET)
     public ResponseEntity<List<Integer>> getNumbers(@RequestParam(name = "date")
-                                                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                                     @RequestParam("pswd") String s) {
         try {
-            if(s.equals("abc")){
-            LocalDateTime dateTime = date.atTime(HOUR_OF_DRAW, Constants.MINUTE_OF_DRAW);
-            log.info("returning data for draw date: "+dateTime+" and numbers were: "+winingNumbersGeneratorFacade.retrieveWonNumbersForDate(dateTime).winningNumbers());
-            return ResponseEntity.ok().body(winingNumbersGeneratorFacade.retrieveWonNumbersForDate(dateTime).winningNumbers());} else
+            if (s.equals("abc")) {
+                LocalDateTime dateTime = date.atTime(HOUR_OF_DRAW, Constants.MINUTE_OF_DRAW);
+                List<Integer> retrievedList = winingNumbersGeneratorFacade.retrieveWonNumbersForDate(dateTime).winningNumbers();
+                if(retrievedList.isEmpty()){
+                    return ResponseEntity.badRequest().build();
+                }
+                log.info("returning data for draw date: " + dateTime + " and numbers were: " + retrievedList);
+                return ResponseEntity.ok().body(winingNumbersGeneratorFacade.retrieveWonNumbersForDate(dateTime).winningNumbers());
+            } else
                 log.info("wrong pswd for request");
-                return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             log.info(e.getMessage() + "  and also " + e.getCause());
             return ResponseEntity.badRequest().build();

@@ -1,4 +1,4 @@
-package pl.generator.winningnumbers;
+package pl.generators.winningnumbers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +10,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import pl.generators.winningnumbers.MutableClock;
-import pl.generators.winningnumbers.WinningNumbersApplication;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

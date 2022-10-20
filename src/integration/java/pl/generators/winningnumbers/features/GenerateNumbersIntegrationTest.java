@@ -1,4 +1,4 @@
-package pl.generator.winningnumbers.features;
+package pl.generators.winningnumbers.features;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import pl.generator.winningnumbers.BaseIntegrationTest;
+import pl.generators.winningnumbers.BaseIntegrationTest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,7 +34,7 @@ public class GenerateNumbersIntegrationTest extends BaseIntegrationTest {
     @DisplayName("Should return 6 numbers for valid date input")
     public void should_process_valid_input_and_return_6_numbers() throws Exception {
         //Given
-        LocalDateTime drawDate = LocalDateTime.of(2022,02,12,12,00,00);
+        LocalDateTime drawDate = LocalDateTime.of(2022,2,12,12,0,0);
 
         Thread.sleep(10005);
         clock.addDays(3);
@@ -58,7 +58,7 @@ public class GenerateNumbersIntegrationTest extends BaseIntegrationTest {
     @DisplayName("Should return bad request for valid date format but date ")
     public void should_return_bad_request_for_future_date() throws Exception {
         //Given
-        LocalDateTime drawDate = LocalDateTime.of(2022,02,24,12,00,00);
+        LocalDateTime drawDate = LocalDateTime.of(2022,2,24,12,0,0);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/winningNumbers")
                         .param("date",drawDate.toString())
                         .param("pswd","abc")).andReturn();
@@ -89,7 +89,7 @@ public class GenerateNumbersIntegrationTest extends BaseIntegrationTest {
     @DisplayName("Should return 6 numbers for valid date input")
     public void should_process_valid_input_and_return_6_numbers_after_three_rows_of_draws() throws Exception {
         //Given
-        LocalDateTime drawDate = LocalDateTime.of(2022,02,26,12,00,00);
+        LocalDateTime drawDate = LocalDateTime.of(2022,2,26,12,0,0);
 
         Thread.sleep(10000);
         clock.addDays(7);

@@ -6,7 +6,6 @@ import pl.generators.winningnumbers.logic.repository.WinningNumbersRepository;
 import pl.generators.winningnumbers.logic.winningnumbersdto.WinningNumbersDto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -23,13 +22,13 @@ public class WiningNumbersGeneratorFacade {
     }
 
     public WinningNumbersDto retrieveWonNumbersForDate(LocalDateTime dateTime) {
-        if (numRepo.existsById(dateTime) && timer.currentTime().isAfter(dateTime)) {
-            return numRepo.findById(dateTime).get();
-        }
-        return WinningNumbersMapper.toDto(List.of(), dateTime);
+        if (timer.currentTime().isAfter(dateTime))
+            return numRepo.findById(dateTime).orElseThrow(ResourceNotFoundException::new);
+//        return WinningNumbersMapper.toDto(List.of(), dateTime);
+        throw new DateBeforeDateOfDrawException();
     }
 
-    //admin method
+    //Refactor generate numbers. It's an internal process and don't require returning optional;
     @Scheduled(initialDelay=10000,fixedDelay = 10000)
     public Optional<WinningNumbersDto> generateNumbers() {
         LocalDateTime dateOfDraw = timer.generateDrawDate();

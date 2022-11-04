@@ -1,11 +1,6 @@
 package pl.generators.winningnumbers.infrastructure.endpoint;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,13 +26,7 @@ public class WinningNumbersController {
     @Autowired
     WiningNumbersGeneratorFacade winingNumbersGeneratorFacade;
 
-    @Operation(summary = "Get winning numbers")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found draw numbers",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(description = "List<Integer>")) }),
-            @ApiResponse(responseCode = "400", description = "Invalid date or password provided",
-                    content = @Content)})
+
     @RequestMapping(value = "/winningNumbers", method = RequestMethod.GET)
     public ResponseEntity<List<Integer>> getNumbers(@Parameter(description = "date of draw - should be saturday to return data") @RequestParam(name = "date")
                                                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
@@ -46,9 +35,9 @@ public class WinningNumbersController {
         if (s.equals("abc")) {
             LocalDateTime dateTime = date.atTime(HOUR_OF_DRAW, Constants.MINUTE_OF_DRAW);
             List<Integer> retrievedList = winingNumbersGeneratorFacade.retrieveWonNumbersForDate(dateTime).winningNumbers();
-            if (retrievedList.isEmpty()) {
-                throw new ResourceNotFoundException();
-            }
+//            if (retrievedList.isEmpty()) {
+//                throw new ResourceNotFoundException();
+//            }
             log.info("returning data for draw date: " + dateTime + " and numbers were: " + retrievedList);
             return ResponseEntity.ok().body(winingNumbersGeneratorFacade.retrieveWonNumbersForDate(dateTime).winningNumbers());
         } else

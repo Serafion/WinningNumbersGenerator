@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static pl.generators.winningnumbers.logic.WinningNumbersTestConstants.*;
 
 class WiningNumbersGeneratorFacadeTest {
 
-    //rebuild tests
 
     WinningNumbersTestConstants constants = new WinningNumbersTestConstants();
     @Test
@@ -48,7 +48,7 @@ class WiningNumbersGeneratorFacadeTest {
         LocalDateTime dateOfDraw = constants.VALID_DATE_OF_DRAW_TO_BE_DRAWN;
 
         //When
-        facade.retrieveWonNumbersForDate(LocalDateTime.now(clock));
+        assertThatExceptionOfType(DateBeforeDateOfDrawException.class).isThrownBy(()-> facade.retrieveWonNumbersForDate(LocalDateTime.now(clock)));
         facade.generateNumbers();
         clock.addDays(8);
         WinningNumbersDto numbersGenerated = facade.retrieveWonNumbersForDate(dateOfDraw);
@@ -68,11 +68,8 @@ class WiningNumbersGeneratorFacadeTest {
         LocalDateTime dateOfDraw = LocalDateTime.of(2022, 8, 13, HOUR_OF_DRAW, MINUTE_OF_DRAW
                 , SECOND_OF_DRAW);
 
-        //When
-        WinningNumbersDto numbersGenerated = facade.retrieveWonNumbersForDate(dateOfDraw);
-
-        //Then
-        assertThat(numbersGenerated.winningNumbers().size()).isEqualTo(0);
+        //When&Then
+        assertThatExceptionOfType(DateBeforeDateOfDrawException.class).isThrownBy(() -> facade.retrieveWonNumbersForDate(dateOfDraw));
     }
 
     @Test
@@ -87,7 +84,7 @@ class WiningNumbersGeneratorFacadeTest {
         LocalDateTime dateOfDraw = constants.VALID_DATE_OF_DRAW_TO_BE_DRAWN;
 
         //When
-        facade.retrieveWonNumbersForDate(LocalDateTime.now(clock));
+        assertThatExceptionOfType(DateBeforeDateOfDrawException.class).isThrownBy(()-> facade.retrieveWonNumbersForDate(LocalDateTime.now(clock)));
         facade.generateNumbers();
         clock.addDays(8);
         WinningNumbersDto numbersGenerated = facade.retrieveWonNumbersForDate(dateOfDraw);

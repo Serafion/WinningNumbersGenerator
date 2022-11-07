@@ -3,6 +3,7 @@ package pl.generators.winningnumbers;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -10,6 +11,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import pl.generators.winningnumbers.logic.WiningNumbersGeneratorFacade;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -17,7 +19,8 @@ import java.time.ZoneId;
 @SpringBootTest(
         classes = WinningNumbersApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = "application.environment=integration")
+        properties = "application.environment=integration"
+)
 @Import(TestConfig.class)
 @Testcontainers
 public class BaseIntegrationTest {
@@ -35,6 +38,9 @@ public class BaseIntegrationTest {
 
     @Autowired
     public MutableClock clock;
+    @SpyBean
+    @Autowired
+    public WiningNumbersGeneratorFacade winingNumbersGeneratorFacade;
 
     @BeforeEach
     void reset() {

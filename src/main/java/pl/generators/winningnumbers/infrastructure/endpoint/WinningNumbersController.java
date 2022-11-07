@@ -42,7 +42,7 @@ public class WinningNumbersController {
             return ResponseEntity.ok().body(winingNumbersGeneratorFacade.retrieveWonNumbersForDate(dateTime).winningNumbers());
         } else
             log.info("wrong pswd for request");
-        throw new ResourceNotFoundException();
+        throw new ResourceNotFoundException(date.toString()+" was the date "+s+" was the pswd");
 
     }
 

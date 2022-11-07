@@ -23,20 +23,19 @@ public class WiningNumbersGeneratorFacade {
 
     public WinningNumbersDto retrieveWonNumbersForDate(LocalDateTime dateTime) {
         if (timer.currentTime().isAfter(dateTime))
-            return numRepo.findById(dateTime).orElseThrow(ResourceNotFoundException::new);
-//        return WinningNumbersMapper.toDto(List.of(), dateTime);
-        throw new DateBeforeDateOfDrawException();
+            return numRepo.findById(dateTime).orElseThrow(() -> new ResourceNotFoundException(dateTime.toString()));
+        throw new DateBeforeDateOfDrawException(dateTime.toString());
     }
 
     //Refactor generate numbers. It's an internal process and don't require returning optional;
-    @Scheduled(initialDelay=10000,fixedDelay = 10000)
+    @Scheduled(cron = "${app.cron}")
     public Optional<WinningNumbersDto> generateNumbers() {
         LocalDateTime dateOfDraw = timer.generateDrawDate();
-        log.info("Date has numbers data:" + numRepo.existsById(dateOfDraw));
+        log.info(dateOfDraw.toString()+" has numbers data:" + numRepo.existsById(dateOfDraw));
         log.info("It's time to make a draw: " + timer.itsTimeToMakeADraw(dateOfDraw));
         if (!numRepo.existsById(dateOfDraw) && timer.itsTimeToMakeADraw(dateOfDraw)) {
             WinningNumbersDto result = generator.generateNumbers(dateOfDraw);
-            log.info("Generated Numbers" + result.winningNumbers());
+            log.info("Generated Numbers" + result.winningNumbers()+ "for date: "+dateOfDraw);
             numRepo.save(result);
             return Optional.of(result);
         }

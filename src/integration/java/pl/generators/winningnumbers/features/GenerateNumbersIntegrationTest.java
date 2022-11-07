@@ -1,6 +1,7 @@
 package pl.generators.winningnumbers.features;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +13,21 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.generators.winningnumbers.BaseIntegrationTest;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.verify;
 
 
 @AutoConfigureMockMvc
 @ActiveProfiles("integration")
+@Slf4j
 public class GenerateNumbersIntegrationTest extends BaseIntegrationTest {
 
 
@@ -36,7 +43,7 @@ public class GenerateNumbersIntegrationTest extends BaseIntegrationTest {
         //Given
         LocalDateTime drawDate = LocalDateTime.of(2022,2,12,12,0,0);
 
-        Thread.sleep(10005);
+        waitingForNumbersToBeDrawn();
         clock.addDays(3);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/winningNumbers")
                 .param("date",drawDate.toLocalDate().toString())
@@ -82,7 +89,7 @@ public class GenerateNumbersIntegrationTest extends BaseIntegrationTest {
 
 
         //When & Then
-        assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
     @Test
@@ -91,12 +98,12 @@ public class GenerateNumbersIntegrationTest extends BaseIntegrationTest {
         //Given
         LocalDateTime drawDate = LocalDateTime.of(2022,2,26,12,0,0);
 
-        Thread.sleep(10000);
-        clock.addDays(7);
-        Thread.sleep(10000);
-        clock.addDays(7);
-        Thread.sleep(10000);
-        clock.addDays(3);
+        for(int i=0;i<40;i++){
+            waitingForNumbersToBeDrawn();
+            clock.addDays(1);
+            log.info("Day is: "+clock.today.toString());
+        }
+
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/winningNumbers")
                 .param("date",drawDate.toLocalDate().toString())
                 .param("pswd","abc")).andReturn();
@@ -125,5 +132,11 @@ public class GenerateNumbersIntegrationTest extends BaseIntegrationTest {
 
         //When & Then
         assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void waitingForNumbersToBeDrawn() {
+        await()
+                .atMost(Duration.of(1000000, ChronoUnit.MILLIS))
+                .untilAsserted(() -> verify(winingNumbersGeneratorFacade, atLeast(2)).generateNumbers());
     }
 }

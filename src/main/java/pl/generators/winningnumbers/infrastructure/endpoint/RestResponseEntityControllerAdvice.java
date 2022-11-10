@@ -15,17 +15,13 @@ public class RestResponseEntityControllerAdvice {
 
     @ExceptionHandler({ResourceNotFoundException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Object> handleNotFoundException(ResourceNotFoundException exception, WebRequest request){
-
+    public ResponseEntity<Object> handleNotFoundException(ResourceNotFoundException exception, WebRequest request) {
         return new ResponseEntity<>("Resource Not Found", new HttpHeaders(), HttpStatus.BAD_REQUEST);
-
     }
 
     @ExceptionHandler({DateBeforeDateOfDrawException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ResponseEntity<Object> handleNotFoundException(DateBeforeDateOfDrawException exception, WebRequest request){
-
+    public ResponseEntity<Object> handleNotFoundException(DateBeforeDateOfDrawException exception, WebRequest request) {
         return new ResponseEntity<>("Date was before date of draw", new HttpHeaders(), HttpStatus.FORBIDDEN);
-
     }
 }

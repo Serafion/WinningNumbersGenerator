@@ -38,7 +38,7 @@ public class BaseIntegrationTest {
 
     @Autowired
     public MutableClock clock;
-    @SpyBean
+//    @SpyBean
     @Autowired
     public WiningNumbersGeneratorFacade winingNumbersGeneratorFacade;
 

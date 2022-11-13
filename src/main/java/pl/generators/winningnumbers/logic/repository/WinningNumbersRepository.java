@@ -12,10 +12,4 @@ import java.time.LocalDateTime;
 @Primary
 public interface WinningNumbersRepository extends MongoRepository<WinningNumbersDto, LocalDateTime> {
 
-//    @Query("{drawDate:'?0'}")
-//    boolean existsById(LocalDateTime dateTime);
-
-//    @Query(value="{category:'?0'}", fields="{'name' : 1, 'quantity' : 1}")
-//    List<GroceryItem> findAll(String category);
-
 }

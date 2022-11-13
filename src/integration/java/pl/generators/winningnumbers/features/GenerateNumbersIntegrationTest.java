@@ -1,11 +1,6 @@
 package pl.generators.winningnumbers.features;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,10 +12,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.generators.winningnumbers.BaseIntegrationTest;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.verify;
 
 
 @AutoConfigureMockMvc
@@ -40,8 +39,9 @@ public class GenerateNumbersIntegrationTest extends BaseIntegrationTest {
     public void should_process_valid_input_and_return_6_numbers() throws Exception {
         //Given
         LocalDateTime drawDate = LocalDateTime.of(2022, 2, 12, 12, 0, 0);
-
-//        waitingForNumbersToBeDrawn();
+        await()
+                .atMost(Duration.ofSeconds(10))
+                .untilAsserted(() -> assertThat(winingNumbersGeneratorFacade.generateNumbers()).isPresent());
         clock.addDays(3);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/winningNumbers")
                 .param("date", drawDate.toLocalDate().toString())
@@ -77,8 +77,8 @@ public class GenerateNumbersIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should return bad request status for invalid request provided")
-    public void should_return_bad_request_for_invalid_request() throws Exception {
+    @DisplayName("Should return forbidden status for invalid request provided")
+    public void should_return_forbidden_for_invalid_request() throws Exception {
         //Given
         LocalDate someDate = LocalDate.now();
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/winningNumbers")
@@ -98,20 +98,12 @@ public class GenerateNumbersIntegrationTest extends BaseIntegrationTest {
 
         await()
                 .atMost(Duration.ofSeconds(10))
-                .untilAsserted(() -> verify(winingNumbersGeneratorFacade, atLeast(2)).generateNumbers());;
-
+                .untilAsserted(() -> assertThat(winingNumbersGeneratorFacade.generateNumbers()).isPresent());
+        clock.addDays(7);
         await()
                 .atMost(Duration.ofSeconds(10))
                 .untilAsserted(() -> assertThat(winingNumbersGeneratorFacade.generateNumbers()).isPresent());
-
-
-
-//        waitingForNumbersToBeDrawn();
-//        for (int i = 0; i < 40; i++) {
-//            waitingForNumbersToBeDrawn();
-//            clock.addDays(1);
-//            log.info("Day is: " + clock.today.toString());
-//        }
+        clock.addDays(7);
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/winningNumbers")
                 .param("date", firstRoundLottery.toLocalDate().toString())
@@ -128,34 +120,28 @@ public class GenerateNumbersIntegrationTest extends BaseIntegrationTest {
         assertThat(list.size()).isEqualTo(6);
 
 
-//        //Given
-//        clock.addDays(7);
-//        LocalDateTime secondRoundLottery = LocalDateTime.of(2022, 2, 26, 12, 0, 0);
-//
-//        await()
-//                .atMost(Duration.ofSeconds(10))
-//                .untilAsserted(() -> verify(winingNumbersGeneratorFacade, atLeast(2)).generateNumbers());
-////        waitingForNumbersToBeDrawn();
-////        for (int i = 0; i < 40; i++) {
-////
-////            clock.addDays(1);
-////            log.info("Day is: " + clock.today.toString());
-////        }
-//
-//
-//        MvcResult mvcResult2 = mockMvc.perform(MockMvcRequestBuilders.get("/winningNumbers")
-//                .param("date", secondRoundLottery.toLocalDate().toString())
-//                .param("pswd", "abc")).andReturn();
-//
-//
-//        //When
-//        String stringResponse2 = mvcResult2.getResponse().getContentAsString();
-//        System.out.println(stringResponse2 + "WAS THE RESPONSE AT DATE" + LocalDateTime.now(clock));
-//        List<Integer> list2 = objectMapper.readValue(stringResponse2, List.class);
-//
-//        //Then
-//        assertThat(mvcResult2.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-//        assertThat(list2.size()).isEqualTo(6);
+        //Given
+        LocalDateTime secondRoundLottery = LocalDateTime.of(2022, 2, 26, 12, 0, 0);
+        await()
+                .atMost(Duration.ofSeconds(10))
+                .untilAsserted(() -> assertThat(winingNumbersGeneratorFacade.generateNumbers()).isPresent());
+        clock.addDays(7);
+
+
+
+        MvcResult mvcResult2 = mockMvc.perform(MockMvcRequestBuilders.get("/winningNumbers")
+                .param("date", secondRoundLottery.toLocalDate().toString())
+                .param("pswd", "abc")).andReturn();
+
+
+        //When
+        String stringResponse2 = mvcResult2.getResponse().getContentAsString();
+        System.out.println(stringResponse2 + "WAS THE RESPONSE AT DATE" + LocalDateTime.now(clock));
+        List<Integer> list2 = objectMapper.readValue(stringResponse2, List.class);
+
+        //Then
+        assertThat(mvcResult2.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(list2.size()).isEqualTo(6);
 
 
     }
@@ -173,10 +159,4 @@ public class GenerateNumbersIntegrationTest extends BaseIntegrationTest {
         //When & Then
         assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
-
-//    private void waitingForNumbersToBeDrawn() {
-//        await()
-//                .atMost(Duration.of(1000000, ChronoUnit.MILLIS))
-//                .untilAsserted(() -> verify(winingNumbersGeneratorFacade, atLeast(2)).generateNumbers());
-//    }
 }

@@ -27,7 +27,6 @@ public class WiningNumbersGeneratorFacade {
         throw new DateBeforeDateOfDrawException(dateTime.toString());
     }
 
-    //Refactor generate numbers. It's an internal process and don't require returning optional;
     @Scheduled(cron = "${app.cron}")
     public Optional<WinningNumbersDto> generateNumbers() {
         LocalDateTime dateOfDraw = timer.generateDrawDate();

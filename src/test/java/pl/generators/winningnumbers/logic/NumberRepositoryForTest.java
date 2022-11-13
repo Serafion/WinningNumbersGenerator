@@ -29,7 +29,9 @@ public class NumberRepositoryForTest implements WinningNumbersRepository {
 
     @Override
     public Optional<WinningNumbersDto> findById(LocalDateTime dateTime) {
-        return Optional.of(wonNumbers.get(dateTime));
+        if(wonNumbers.containsKey(dateTime)){
+        return Optional.of(wonNumbers.get(dateTime));}
+        return Optional.empty();
     }
 
     @Override

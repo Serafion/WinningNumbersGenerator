@@ -92,4 +92,19 @@ class WiningNumbersGeneratorFacadeTest {
         //Then
         assertThat(numbersGenerated.winningNumbers().size()).isEqualTo(6);
     }
+    @Test
+    @DisplayName("Should throw exception when invalid date provided")
+    void testingResourceNotFoundException(){
+        //Given
+        WinningNumbersRepository repository = new NumberRepositoryForTest();
+        MutableClock clock = new MutableClock(constants.VALID_DATE_SATURDAY_BEFORE_DRAW.atZone(ZoneId.systemDefault()));
+        WiningNumbersGeneratorFacade facade = new WiningNumberGeneratorConfiguration().buildModuleForTests(clock, repository);
+
+        LocalDateTime dateOfDraw = LocalDateTime.of(2022, 8, 15, HOUR_OF_DRAW, MINUTE_OF_DRAW
+                , SECOND_OF_DRAW);
+
+        //When&Then
+        assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() -> facade.retrieveWonNumbersForDate(dateOfDraw));
+
+    }
 }
